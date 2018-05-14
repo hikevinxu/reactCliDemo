@@ -5,15 +5,17 @@ You can find the most recent version of this guide [here](https://github.com/fac
 
 ## Table of Contents
 
-1. create-react-app my-app  搭建react项目（这个时候你搭建的react项目是一个简易的项目文件）；
-2. cd my-app     进入项目
-3. npm run eject   执行这段命令可以查看webpack配置文件（项目展开）（*这是一个不可逆的过程）；
-4. 修改配置：
-  （1）install  你项目中需要用到的包例如：axios，sass-loader,react-router-dom，react-router，qs
-  （2）install  你项目中要用到的组件例如：element-react，element-theme-default
-  （3）在config/paths.js文件里修改37行配置： envPublicUrl || (publicUrl ? url.parse(publicUrl).pathname : './');
-  （4）在package.json文件里添加配置 "homepage": "./",
-5.在src文件夹里添加项目所需目录：
+- 1. create-react-app my-app  搭建react项目（这个时候你搭建的react项目是一个简易的项目文件）；
+- 2. cd my-app     进入项目
+- 3. npm run eject   执行这段命令可以查看webpack配置文件（项目展开）（*这是一个不可逆的过程）；
+- 4. 修改配置：
+  + （1）install  你项目中需要用到的包例如：axios，sass-loader,react-router-dom，react-router，qs
+  + （2）install  你项目中要用到的组件例如：element-react，element-theme-default
+  + （3）在config/paths.js文件里修改37行配置： envPublicUrl || (publicUrl ? url.parse(publicUrl).pathname : './');
+  + （4）在package.json文件里添加配置 "homepage": "./",
+- 5.在src文件夹里添加项目所需目录：
+``` text
+
   -/api/                  统一放置resquest接口
   -/common/               放置一些公共的文件（js，css，images）
     +/css/          css公共样式
@@ -25,6 +27,9 @@ You can find the most recent version of this guide [here](https://github.com/fac
   -/router/   路由配置文件
   -/store/    其他文件
   -index.js   入口文件，在入口文件中引入全局的包 例如：
+
+```
+```JavaScript
         import React from 'react';
 
         import ReactDOM from 'react-dom';
@@ -36,13 +41,17 @@ You can find the most recent version of this guide [here](https://github.com/fac
         ReactDOM.render(
 
           <Root />
-    ,
+          ,
           document.getElementById('root')
 
-);
+        );
+```
    注意： 在分配好各自的引入路径
-6.在package.json文件里配置 proxy 代理：
-  例如： "proxy": {
+- 6.在package.json文件里配置 proxy 代理：
+  例如：
+  ```JavaScript
+
+  "proxy": {
 
       "/zsy_manage": {
 
@@ -67,30 +76,33 @@ You can find the most recent version of this guide [here](https://github.com/fac
       }
 
     },
-7.在src/api文件里配置api.js 接口：
 
-import axios from 'axios'
-// import qs from 'qs'
-import router from '../router/index'
+ ```
+- 7.在src/api文件里配置api.js 接口：
+```JavaScript
 
-// axios 配置
-//axios.defaults.timeout = 10000;
-axios.defaults.headers.post['data-Type'] = 'json';
-axios.defaults.headers.post['Content-Type'] = 'application/json; charset=UTF-8';
-//axios.defaults.baseURL = 'http://localhost:8080';
+  import axios from 'axios'
+  // import qs from 'qs'
+  import router from '../router/index'
 
-//POST传参序列化
-axios.interceptors.request.use((config) => {
-  if (config.method === 'post') {
-    //config.data = qs.stringify(config.data);
-    config.data = config.data;
-  }
-  config.headers.astk = localStorage.token;
-  return config;
-}, (error) => {
-  //_.toast("错误的传参", 'fail');
-  return Promise.reject(error);
-});
+  // axios 配置
+  //axios.defaults.timeout = 10000;
+  axios.defaults.headers.post['data-Type'] = 'json';
+  axios.defaults.headers.post['Content-Type'] = 'application/json; charset=UTF-8';
+  //axios.defaults.baseURL = 'http://localhost:8080';
+
+  //POST传参序列化
+  axios.interceptors.request.use((config) => {
+    if (config.method === 'post') {
+      //config.data = qs.stringify(config.data);
+      config.data = config.data;
+    }
+    config.headers.astk = localStorage.token;
+    return config;
+  }, (error) => {
+    //_.toast("错误的传参", 'fail');
+    return Promise.reject(error);
+  });
 
 //返回状态判断
 axios.interceptors.response.use((res) => {
@@ -167,8 +179,13 @@ export default {
     }
 }    // 把接口从文件里导出： 在页面上引入  import api from '../../api/api.js'
 
-8.在router/index.js里配置你的路由列表;
+```
+
+- 8.在router/index.js里配置你的路由列表;
 eg：
+
+```javascript
+
 import React from 'react';
 import { Route, BrowserRouter, Redirect, HashRouter } from 'react-router-dom';
 
@@ -201,7 +218,9 @@ const Root = () => (
 
  export default Root;
 
-8. 删除node_modules；执行 yarn（下载包） --> yarn start（启动本地环境） --> yarn build（打包）
+ ```
+
+- 9. 删除node_modules；执行 yarn（下载包） --> yarn start（启动本地环境） --> yarn build（打包）
 
 ## Updating to New Releases
 
