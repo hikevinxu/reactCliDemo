@@ -5,16 +5,16 @@ You can find the most recent version of this guide [here](https://github.com/fac
 
 ## Table of Contents
 
-- 1. create-react-app my-app  搭建react项目（这个时候你搭建的react项目是一个简易的项目文件）；
-- 2. cd my-app     进入项目
-- 3. npm run eject   执行这段命令可以查看webpack配置文件（项目展开）（*这是一个不可逆的过程）；
-- 4. 修改配置：
+### 1. create-react-app my-app  搭建react项目（这个时候你搭建的react项目是一个简易的项目文件）；
+### 2. cd my-app     进入项目
+### 3. npm run eject   执行这段命令可以查看webpack配置文件（项目展开）（*这是一个不可逆的过程）；
+### 4. 修改配置：
   + （1）install  你项目中需要用到的包例如：axios，sass-loader,react-router-dom，react-router，qs
   + （2）install  你项目中要用到的组件例如：element-react，element-theme-default
   + （3）在config/paths.js文件里修改37行配置： envPublicUrl || (publicUrl ? url.parse(publicUrl).pathname : './');
   + （4）在package.json文件里添加配置 "homepage": "./",
-- 5.在src文件夹里添加项目所需目录：
-``` text
+### 5.在src文件夹里添加项目所需目录：
+```js
 
   -/api/                  统一放置resquest接口
   -/common/               放置一些公共的文件（js，css，images）
@@ -29,7 +29,7 @@ You can find the most recent version of this guide [here](https://github.com/fac
   -index.js   入口文件，在入口文件中引入全局的包 例如：
 
 ```
-```JavaScript
+```js
         import React from 'react';
 
         import ReactDOM from 'react-dom';
@@ -47,9 +47,9 @@ You can find the most recent version of this guide [here](https://github.com/fac
         );
 ```
    注意： 在分配好各自的引入路径
-- 6.在package.json文件里配置 proxy 代理：
+### 6.在package.json文件里配置 proxy 代理：
   例如：
-  ```JavaScript
+  ```js
 
   "proxy": {
 
@@ -78,149 +78,148 @@ You can find the most recent version of this guide [here](https://github.com/fac
     },
 
  ```
-- 7.在src/api文件里配置api.js 接口：
-```JavaScript
+### 7.在src/api文件里配置api.js 接口：
+```js
 
-  import axios from 'axios'
-  // import qs from 'qs'
-  import router from '../router/index'
+    import axios from 'axios'
+    // import qs from 'qs'
+    import router from '../router/index'
 
-  // axios 配置
-  //axios.defaults.timeout = 10000;
-  axios.defaults.headers.post['data-Type'] = 'json';
-  axios.defaults.headers.post['Content-Type'] = 'application/json; charset=UTF-8';
-  //axios.defaults.baseURL = 'http://localhost:8080';
+    // axios 配置
+    //axios.defaults.timeout = 10000;
+    axios.defaults.headers.post['data-Type'] = 'json';
+    axios.defaults.headers.post['Content-Type'] = 'application/json; charset=UTF-8';
+    //axios.defaults.baseURL = 'http://localhost:8080';
 
-  //POST传参序列化
-  axios.interceptors.request.use((config) => {
-    if (config.method === 'post') {
-      //config.data = qs.stringify(config.data);
-      config.data = config.data;
+    //POST传参序列化
+    axios.interceptors.request.use((config) => {
+      if (config.method === 'post') {
+        //config.data = qs.stringify(config.data);
+        config.data = config.data;
+      }
+      config.headers.astk = localStorage.token;
+      return config;
+    }, (error) => {
+      //_.toast("错误的传参", 'fail');
+      return Promise.reject(error);
+    });
+
+  //返回状态判断
+  axios.interceptors.response.use((res) => {
+    if (res.status != 200) {
+      return Promise.reject(res);
     }
-    config.headers.astk = localStorage.token;
-    return config;
+  //  本地后台自己做的一些状态码判断
+  //   else if (res.data.code != 200) {
+  //     let info = '系统异常3';
+  //     switch (res.data.code) {
+  //       case 201:
+  //         info = '参数格式错误';
+  //         break;
+  //       case 202:
+  //         router.push('/login');
+  //         info = '登录失效';
+  //         break;
+  //       case 203:
+  //         info = '无数据';
+  //         break;
+  //       case 204:
+  //         info = '不支持请求';
+  //         break;
+  //       case 403:
+  //         info = '登陆超时';
+  //         break;
+  //       case 500:
+  //         info = '程序异常';
+  //         break;
+  //     }
+  //     if (res.data.msg) {
+  //       info = res.data.msg;
+  //     }
+  //     alert(info);
+  //     return Promise.reject(res);
+  //   }
+    return res;
   }, (error) => {
-    //_.toast("错误的传参", 'fail');
     return Promise.reject(error);
   });
 
-//返回状态判断
-axios.interceptors.response.use((res) => {
-  if (res.status != 200) {
-    return Promise.reject(res);
+  export function fetch(url, params) {
+    return new Promise((resolve, reject) => {
+      axios.post(url, params)
+        .then(response => {
+          resolve(response.data);
+        }, err => {
+          reject(err);
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
   }
-//  本地后台自己做的一些状态码判断
-//   else if (res.data.code != 200) {
-//     let info = '系统异常3';
-//     switch (res.data.code) {
-//       case 201:
-//         info = '参数格式错误';
-//         break;
-//       case 202:
-//         router.push('/login');
-//         info = '登录失效';
-//         break;
-//       case 203:
-//         info = '无数据';
-//         break;
-//       case 204:
-//         info = '不支持请求';
-//         break;
-//       case 403:
-//         info = '登陆超时';
-//         break;
-//       case 500:
-//         info = '程序异常';
-//         break;
-//     }
-//     if (res.data.msg) {
-//       info = res.data.msg;
-//     }
-//     alert(info);
-//     return Promise.reject(res);
-//   }
-  return res;
-}, (error) => {
-  return Promise.reject(error);
-});
 
-export function fetch(url, params) {
-  return new Promise((resolve, reject) => {
-    axios.post(url, params)
-      .then(response => {
-        resolve(response.data);
-      }, err => {
-        reject(err);
-      })
-      .catch((error) => {
-        reject(error)
-      })
-  })
-}
+  export function fetch_get(url, params) {
+    return new Promise((resolve, reject) => {
+      axios.get(url, {
+          params: params
+        }).then(response => {
+          resolve(response.data);
+        }, err => {
+          reject(err);
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  }
 
-export function fetch_get(url, params) {
-  return new Promise((resolve, reject) => {
-    axios.get(url, {
-        params: params
-      }).then(response => {
-        resolve(response.data);
-      }, err => {
-        reject(err);
-      })
-      .catch((error) => {
-        reject(error)
-      })
-  })
-}
-
-export default {
-    inMovieList(params) {
-        return fetch('/zsy_manage/v2/movie/in_theaters', params)
-    }
-}    // 把接口从文件里导出： 在页面上引入  import api from '../../api/api.js'
+  export default {
+      inMovieList(params) {
+          return fetch('/zsy_manage/v2/movie/in_theaters', params)
+      }
+  }    // 把接口从文件里导出： 在页面上引入  import api from '../../api/api.js'
 
 ```
 
-- 8.在router/index.js里配置你的路由列表;
-eg：
+### 8.在router/index.js里配置你的路由列表;
+  eg：
 
-```javascript
+```js
 
-import React from 'react';
-import { Route, BrowserRouter, Redirect, HashRouter } from 'react-router-dom';
+  import React from 'react';
+  import { Route, BrowserRouter, Redirect, HashRouter } from 'react-router-dom';
 
-import App from '../pages/App';
-import Home from '../pages/Home';
-import Test from '../pages/Test';
+  import App from '../pages/App';
+  import Home from '../pages/Home';
+  import Test from '../pages/Test';
 
-// const Root = () => (
-//         <BrowserRouter basename="/zsy_manage">         // basename的含义是你在服务器中的二级目录等等
-//             <div>
-//                 <Route path="/" exact component={App}/>
-//                 <Route path="/home" component={Home} />
-//                 <Route path="/test" component={Test} />
-//                 <Route path="/hello" render={() => <Redirect to="/" />} />
-//             </div>
-//        </BrowserRouter>
-//  );
+  // const Root = () => (
+  //         <BrowserRouter basename="/zsy_manage">         // basename的含义是你在服务器中的二级目录等等
+  //             <div>
+  //                 <Route path="/" exact component={App}/>
+  //                 <Route path="/home" component={Home} />
+  //                 <Route path="/test" component={Test} />
+  //                 <Route path="/hello" render={() => <Redirect to="/" />} />
+  //             </div>
+  //        </BrowserRouter>
+  //  );
 
-const Root = () => (
-    <HashRouter>
-        <div>
-            <Route path="/" exact component={App}/>
-            <Route path="/home" component={Home} />
-            <Route path="/test" component={Test} />
-            <Route path="/hello" render={() => <Redirect to="/" />} />
-        </div>
-   </HashRouter>
-);
+  const Root = () => (
+      <HashRouter>
+          <div>
+              <Route path="/" exact component={App}/>
+              <Route path="/home" component={Home} />
+              <Route path="/test" component={Test} />
+              <Route path="/hello" render={() => <Redirect to="/" />} />
+          </div>
+     </HashRouter>
+  );
 
-
- export default Root;
+   export default Root;
 
  ```
 
-- 9. 删除node_modules；执行 yarn（下载包） --> yarn start（启动本地环境） --> yarn build（打包）
+### 9. 删除node_modules；执行 yarn（下载包） --> yarn start（启动本地环境） --> yarn build（打包）
 
 ## Updating to New Releases
 
